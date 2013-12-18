@@ -1,153 +1,22 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
-# ---------------------------
-# projects/collatz/Collatz.py
-# Copyright (C) 2013
-# Glenn P. Downing
-# ---------------------------
-
-# ------------
-# collatz_read
-# ------------
-
 # a global dictionary for a lazy cache
 global cache
 global cache_lazy
 cache = dict()
 cache_lazy = dict()
 cache_lazy = {1:1}
- 
 
-def collatz_read (r) :
-    """
-    r is a  reader
-    returns an generator that iterates over a sequence of lists of ints of length 2
-    """
-    for s in r :
-        l = s.split()
-        b = int(l[0])
-        e = int(l[1])
-        assert b > 0
-        assert e > 0
-        yield [b, e]
+def collatz_eval () :
+    generate_cache() 
+    values = []
+    ans = 1
+    for i in xrange(0,len(cache)):
+        if (cache[i][1] > ans):
+            key = cache[i][0]
+            ans = cache[i][1]
 
-# ------------
-# collatz_eval
-# ------------
-def collatz_eval ((i, j)) :
-    """
-    i is the beginning of the range, inclusive
-    j is the end       of the range, inclusive
-    return the max cycle length in the range [i, j]
-    """
-    assert i > 0
-    assert j > 0
-    generate_cache()
-    
-    v = 1
-    if (j< i):
-        i,j=j,i
-
-    if ( i < j/2) :
-        i = j/2
- 
-    #indexes of i and j in cache
-    ii = i / 10000
-    ij = j / 10000
-    
-    #print "J-I = ", (j-i)
-    #print "ii and ij ", ii, " " , ij
-
-    if (ii == ij and i <= cache[ii][0] <= j):
-        return cache[ii][1]
-    
-    #if it's small enough and is between ranges
-    # do the computation
-    if (j-i <= 10000):
-        return collatz_eval_simple((i,j))
-
-    index = ii
-
-    #go through each range to find the max length
-    while (index < ij):
-        #print "index is ", index
-        #print "cache[index][0] " , cache[index][0]
-        if ( i <= cache[index][0] and cache[index][1] > v):
-            v = cache[index][1] #current max length
-        elif ( i >= cache[index][0]) :
-            temp2 = collatz_eval_simple((i,(ii+1)*10000))
-            if (temp2 > v):
-                v = temp2
-
-        if (cache[index][1] > v):
-            v = cache[index][1]
-        index+=1
-        #corner case, if it reaches ij
-        if (ij == index and j < cache[index][0]):
-            temp2 = collatz_eval_simple(((ij*10000),j))
-            if (temp2> v):
-                v = temp2
-        else:
-            if(cache[index][1]> v):
-                v = cache[index][1]
-            
-    assert v > 0
-    return v
-
-
-# -------------------
-# collatz_eval_simple
-# ------------------
-
-def collatz_eval_simple ((i, j)) :
-    """
-    i is the beginning of the range, inclusive
-    j is the end       of the range, inclusive
-    Uses
-    return the max cycle length in the range [i, j]
-    """
-    assert i > 0
-    assert j > 0
-    v = 1
-    if (j< i):
-        i,j=j,i
-
-    if ( i < j/2) :
-        i = j/2
-    for k in range(i, j+1):
-        temp = collatz_getLength(k)
-        if (temp > v):
-            v = temp
-
-    assert v > 0
-    return v
-
-# -----------------
-# collatz_getLength
-# -----------------
-
-def collatz_getLength(k) :
-    """
-    helper method to find the cycle length of the parameter
-    """
-    c = 1
-
-    assert k>0
-
-    if (k in cache_lazy):
-        return cache_lazy[k]
-    else: # not in the cache
-        if (k%2) == 0:
-            c = 1+ collatz_getLength(k/2)
-        else :
-            c= 2+ collatz_getLength((3*k+1)/2)
-
-        cache_lazy[k]=c
-        
-    assert c>0
-    return c
+    return key
 
 def generate_cache(): 
     cache[0]=(6171,262)
@@ -250,31 +119,5 @@ def generate_cache():
     cache[97]=(970599,458)
     cache[98]=(980905,427)
     cache[99]=(997823,440)
-# -------------
-# collatz_print
-# -------------
 
-def collatz_print (w, (i, j), v) :
-    """
-    prints the values of i, j, and v
-    w is a writer
-    v is the max cycle length
-    i is the beginning of the range, inclusive
-    j is the end       of the range, inclusive
-    """
-    w.write(str(i) + " " + str(j) + " " + str(v) + "\n")
-
-# -------------
-# collatz_solve
-# -------------
-
-def collatz_solve (r, w) :
-    """
-    read, eval, print loop
-    r is a reader
-    w is a writer
-    """
-    for t in collatz_read(r) :
-        v = collatz_eval(t)
-        collatz_print(w, t, v)
-
+print collatz_eval()

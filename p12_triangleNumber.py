@@ -6,15 +6,14 @@ def generate_triangleNumber():
 	n = 1
 	tri_num = 0
 	while (numDivs <= 500):
+		numDivs = 2
 		tri_num = n*(n+1)/2
-
 		for i in xrange(2,int(math.ceil(math.sqrt(tri_num)))):
 			if (tri_num % i == 0):
 				numDivs = numDivs + 2
 		if (tri_num % int(math.sqrt(tri_num)) == 0):
 			numDivs = numDivs -1
 
-		numDivs = 2
 		n = n + 1
 
 	return tri_num
