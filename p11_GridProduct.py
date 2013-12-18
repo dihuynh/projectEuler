@@ -37,12 +37,13 @@ def check_diag(grid,stride):
 			cur = reduce(lambda x,y: x*y, mini_list)
 			maxProd = max(cur,maxProd)
 
-	for r in xrange(len(grid)-1,stride,-1):
+	for r in xrange(0,len(grid)-stride+1):
 		for c in xrange(len(grid)-1, stride, -1):
 			mini_list = []
 			#grab 4 elements horiontally from NW to SE
 			for count in xrange(stride):
-				mini_list.append(grid[r-count][c-count])	
+				mini_list.append(grid[r+count][c-count])	
+			#print r, c, "checking: ", mini_list
 			cur = reduce(lambda x,y: x*y, mini_list)
 			maxProd = max(cur,maxProd)
 	return maxProd	
