@@ -21,7 +21,7 @@ def get_max_path(lists):
 			lists[i][j] += max([lists[i+1][j], lists[i+1][j+1]])
 	return lists[0][0]
 
-triangle = open("p18_triangle.txt").readlines()
+triangle = open("p67_triangle.txt").readlines()
 # triangle = open("small_test.txt").readlines()
 lists = strip_newlines(triangle)
 print get_max_path(lists)
