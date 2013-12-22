@@ -1,28 +1,34 @@
+
 #!/usr/bin/env python
 import math
+import time
 
-def isInt(n):
-	return math.ceil(n) == math.floor(n)
 
-def get_cycles_length(n):
-	#keep a list of recurring digits
-	#the length of this list is the reciprocal cycle length
-	cycle = []
-	over = 10
-	print "what", over%n 
+def reciprocalCycle(n):
+	count = 1
+	rem = 10 % n
 
-	while (over % n != 1):
-		div = over/n
-		remainder = over % n
-		cycle.append(div)
-		over = remainder*10
+	while rem != 1:
+		rem = rem*10 % n
+		count += 1
+	return count
 
-	return len(cycle)
 
-max_cycle = 0
-for i in xrange(1000,2,-1):
-	cycle = get_cycles_length(i)
-	print "Cycle", cycle
-	max_cycle = max(cycle,max_cycle)
+def main():
+	limit = 1000
+	maxLength = 0
+	maxNum = 2
+	x = 0
 
-print max_cycle
+	for n in xrange(limit,2,-1):
+		if (n % 2 != 0 and n % 5 != 0):
+			x = reciprocalCycle(n)
+			if ( x > maxLength):
+				maxNum = n
+				maxLength = x
+
+	return maxNum
+
+start = time.time()
+print main()
+print time.time() - start
