@@ -1,46 +1,43 @@
 #!/usr/bin/env python
 import itertools
+import time
 
 digits = [0,1,2,3,4,5,6,7,8,9]
 valid = set()
 
-def toInt(l):
-	n = ""
-	for i in l:
-		n += str(i)
-	return int(n)
+def no_repeat_digit(a):
+	return len(set(list(str(a)))) == len(list(str(a)))
 
-def get_first23():
-	first =[]
-	for i in xrange(1,len(digits)):
-		first.append(i)
-		for j in xrange(1,len(digits)):
-			if (i != j):
-				first.append(j)
-				num1 = toInt(first)
-				yield num1
-				first.remove(j)
-		first.remove(i)
+def no_common_digit(m,n): 
+	sm = set(list(str(m)))
+	sn = set(list(str(n)))
+	return len(sm.intersection(sn)) == 0
 
-def get_left(l):
-	return itertools.permutations([x for x in digits if x not in l and x != 0])
+def no_zeros(n):
+	 return '0' not in list(str(n))
 
-def get_first14():
-	first =[]
-	for i in xrange(1,len(digits)):
-		first.append(i)
-		print 
-		for j in xrange(1,len(digits)):
-			if (i != j):
-				first.append(j)
-				num1 = toInt(first)
-				yield num1
-				first.remove(j)
-		first.remove(i)
+# for cleaner code
+def valid(n):
+	return no_zeros(n) and no_repeat_digit(n)
 
-def get_all23():
-	for f in get_all23():
-		print f,
-		for s in getleft(f):
-			print s,
-		print 
+products = []
+# 1 of 2 cases: 2 digits * 3 digits
+for a in xrange(10,99):
+	if valid(a):
+		for b in xrange(100,999):
+			if no_common_digit(a,b) and valid(b):
+				c = a * b
+				if len(str(c)) == 4 and valid(c)\
+					and no_common_digit(a,c) and no_common_digit(b,c):
+					products.append(c)
+
+# 2 of 2 cases: 1 digits * 4 digits
+for a in xrange(1,9):
+	for b in xrange(1000,9999):
+		if no_common_digit(a,b) and valid(b):
+				c = a * b
+				if len(str(c)) == 4 and valid(c)\
+					and no_common_digit(a,c) and no_common_digit(b,c):
+					products.append(c)
+
+print sum(set(products))
